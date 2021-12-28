@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title> Weather App Demo </title>
+<meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+
+<div>
+	<h1>Weather App</h1>
+	<p> Search for a city or Zip </p>
+	<input type="text" value="" name="location" id="location">
+	<button id="submit">Submit</button>
+	<br>
+	<div id="outputData"></div>
+</div>
+
+<!------------------------JS--------------------->
+<script type="text/javascript">
+	var apiKey = "43c7e31e220d48f62bc51e192073aceb";
+	var skey = "";
+	$(document).ready(function(){
+		$("#submit").click(function(){
+			var location = $("#location").val();
+			if(!isNaN(location)){
+				skey = "zip";
+			}
+			else{
+				skey = "q";
+			}
+			if(location != ""){
+				$.ajax({
+					url: 'http://api.openweathermap.org/data/2.5/weather?' + skey + '=' + location + '&units=imperial&appid=' + apiKey,
+					dataType:"jsonp",
+					type: "GET",
+					success: function(data){
+						var result = outputData(data);
+						$("#outputData").html(result);
+						$("#outputData").val('');
+					}
+				})
+			}
+		})
+	})
+
+	function outputData(data){
+		return "<div><h2>Weather in " + data.name + "</h2>" + 
+		"<img src='http://openweathermap.org/img/w/" + data.weather[0].icon + ".png' width=100px>" + 
+		"<h4> Weather: " + data.weather[0].main + "<br>" + 
+		"Description: " + data.weather[0].description + "<br>" + 
+		"Temperature: " + data.main.temp + " F <br> " + 
+		"High Temp: " + data.main.temp_max + " F <br> " + 
+		"Low Temp: " + data.main.temp_min + " F <br>" + 
+		"Pressure: " + data.main.pressure + " hPa <br>" + 
+		"Humidity: " + data.main.humidity + "% <br>" + 
+		"Visibility: " + data.visibility + " meters <br>" + 
+		"Wind Speed: " + data.wind.speed + " m/sec <br>" + 
+		"Wind Direction: " + data.wind.deg + " degrees </h4></div>";
+	}
+
+</script>
+
+</body>
